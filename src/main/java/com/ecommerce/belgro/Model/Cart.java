@@ -25,6 +25,6 @@ public class Cart {
     private double totalSellingPrice;
     private int totalItem;
     private double totalMrpPrice; //MRP stands for Manufacturing Resource Planning. It is a computerized system to manage the production and inventory of goods. MRP can be used in different types of industries like manufacturing, retail, and logistics.
-    private double discount;
+    private int discount;
     private String couponCode;
 }

@@ -12,7 +12,6 @@ import java.util.List;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-@EqualsAndHashCode
 public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -22,7 +21,7 @@ public class Product {
     private String description;
     private double mrpPrice;
     private double sellingPrice;
-    private double discountPercent;
+    private int discountPercent;
     private int quantity;
     private String color;
 
