@@ -9,12 +9,17 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.crypto.SecretKey;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
+import java.util.List;
 
 public class JwtTokenValidator extends OncePerRequestFilter {
 
@@ -35,6 +40,13 @@ public class JwtTokenValidator extends OncePerRequestFilter {
                         .build()
                         .parseSignedClaims(jwt)
                         .getPayload();
+
+                    String email = String.valueOf(claims.get("email"));
+                    String Authorities = String.valueOf(claims.get("authorities"));
+                List<GrantedAuthority> auths= AuthorityUtils
+                        .commaSeparatedStringToAuthorityList(Authorities);
+
+                Authentication authentication = new UsernamePasswordAuthenticationToken(email, null, auths);
             }
             catch (Exception e){
                 throw new BadCredentialsException("Invalid JWT token ...");
