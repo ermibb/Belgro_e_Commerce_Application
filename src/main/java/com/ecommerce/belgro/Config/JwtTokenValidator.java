@@ -13,6 +13,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.crypto.SecretKey;
@@ -33,13 +34,9 @@ public class JwtTokenValidator extends OncePerRequestFilter {
 
             try
             {
-               // SecretKey key = Keys.hmacShaKeyFor(JWT_CONSTANT.SECRET_KEY.getBytes());
-                SecretKey key = Keys.hmacShaKeyFor(JWT_CONSTANT.SECRET_KEY.getBytes(StandardCharsets.UTF_8));
-                Claims claims = Jwts.parser()
-                        .verifyWith(key)
-                        .build()
-                        .parseSignedClaims(jwt)
-                        .getPayload();
+                SecretKey key = Keys.hmacShaKeyFor(JWT_CONSTANT.SECRET_KEY.getBytes());
+                Claims claims = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(jwt).getBody();
+
 
                     String email = String.valueOf(claims.get("email"));
                     String Authorities = String.valueOf(claims.get("authorities"));
@@ -47,11 +44,14 @@ public class JwtTokenValidator extends OncePerRequestFilter {
                         .commaSeparatedStringToAuthorityList(Authorities);
 
                 Authentication authentication = new UsernamePasswordAuthenticationToken(email, null, auths);
+                SecurityContextHolder.getContext().setAuthentication(authentication);
             }
             catch (Exception e){
                 throw new BadCredentialsException("Invalid JWT token ...");
             }
         }
+
+        filterChain.doFilter(request, response);
 
     }
 }
