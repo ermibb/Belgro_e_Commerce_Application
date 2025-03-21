@@ -20,7 +20,7 @@ import java.util.List;
 public class CustomerUserServiceImpl implements UserDetailsService {
     private final UserRepository userRepository;
     private final SellerRepository sellerRepository;
-    private static final String SELLER_PREFIX = "seller";
+    private static final String SELLER_PREFIX = "seller_";
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         if (username.startsWith(SELLER_PREFIX)){
