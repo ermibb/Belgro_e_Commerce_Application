@@ -86,6 +86,7 @@ public class AuthServiceImpl implements AuthService {
                 }
             }
             else {
+                System.out.println("email: "+email);
                 User user = userRepository.findByEmail(email);
                 if(user==null){
                     throw new Exception("User not exist with provided email");
