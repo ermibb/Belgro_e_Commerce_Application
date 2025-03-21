@@ -3,9 +3,11 @@ package com.ecommerce.belgro.Service.Impl;
 import com.ecommerce.belgro.Config.JwtProvider;
 import com.ecommerce.belgro.Domain.USER_ROLE;
 import com.ecommerce.belgro.Model.Cart;
+import com.ecommerce.belgro.Model.Seller;
 import com.ecommerce.belgro.Model.User;
 import com.ecommerce.belgro.Model.VerificationCode;
 import com.ecommerce.belgro.Repository.CartRepository;
+import com.ecommerce.belgro.Repository.SellerRepository;
 import com.ecommerce.belgro.Repository.UserRepository;
 import com.ecommerce.belgro.Repository.VerificationCodeRepository;
 import com.ecommerce.belgro.Request.LoginRequest;
@@ -39,6 +41,7 @@ public class AuthServiceImpl implements AuthService {
     private  final VerificationCodeRepository verificationCodeRepository;
     private final EmailService emailService;
     private final  CustomerUserServiceImpl customerUserService;
+    private final SellerRepository sellerRepository;
 
     @Override
     public String createUser(SignupRequest req) throws Exception {
@@ -70,14 +73,23 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public void sentLoginOtp(String email) throws Exception {
-        String SIGNING_PREFIX = "signin_";
+    public void sentLoginOtp(String email, USER_ROLE role) throws Exception {
+        String SIGNING_PREFIX = "signing_";
+        //String SELLER_PREFIX ="seller_";
         if(email.startsWith(SIGNING_PREFIX)){
             email = email.substring(SIGNING_PREFIX.length());
 
-            User user = userRepository.findByEmail(email);
-            if(user==null){
-                throw new Exception("User not exist with provided email");
+            if (role.equals(USER_ROLE.ROLE_SELLER )){
+                Seller seller = sellerRepository.findByEmail(email);
+                if (seller == null){
+                    throw new Exception("Seller not found");
+                }
+            }
+            else {
+                User user = userRepository.findByEmail(email);
+                if(user==null){
+                    throw new Exception("User not exist with provided email");
+                }
             }
         }
 
