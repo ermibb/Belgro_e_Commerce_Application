@@ -4,6 +4,7 @@ import com.ecommerce.belgro.Domain.USER_ROLE;
 import com.ecommerce.belgro.Model.User;
 import com.ecommerce.belgro.Model.VerificationCode;
 import com.ecommerce.belgro.Repository.UserRepository;
+import com.ecommerce.belgro.Request.LoginOtpRequest;
 import com.ecommerce.belgro.Request.LoginRequest;
 import com.ecommerce.belgro.Response.ApiResponse;
 import com.ecommerce.belgro.Response.AuthResponse;
@@ -39,12 +40,12 @@ public class AuthController {
     }
 
     @PostMapping("/sent/login-signup-otp")
-    public ResponseEntity<ApiResponse> sentOtpHandler(@RequestBody VerificationCode req) throws Exception {
+    public ResponseEntity<ApiResponse> sentOtpHandler(@RequestBody LoginOtpRequest req) throws Exception {
 
-        authService.sentLoginOtp(req.getEmail());
+        authService.sentLoginOtp(req.getEmail(), req.getRole());
         ApiResponse response = new ApiResponse();
         response.setMessage("Otp sent Successfully");
-        return new ResponseEntity<>(response, HttpStatus.ACCEPTED);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @PostMapping("/signing")

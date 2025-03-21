@@ -20,6 +20,7 @@ public class Address {
     private String locality;
     private String address;
     private String city;
+    private String mobile;
     private String state;
     private String pinCode;
 
