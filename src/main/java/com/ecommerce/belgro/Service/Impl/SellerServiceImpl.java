@@ -3,6 +3,7 @@ package com.ecommerce.belgro.Service.Impl;
 import com.ecommerce.belgro.Config.JwtProvider;
 import com.ecommerce.belgro.Domain.AccountStatus;
 import com.ecommerce.belgro.Domain.USER_ROLE;
+import com.ecommerce.belgro.Exceptions.SellerException;
 import com.ecommerce.belgro.Model.Address;
 import com.ecommerce.belgro.Model.Seller;
 import com.ecommerce.belgro.Repository.AddressRepository;
@@ -50,8 +51,8 @@ public class SellerServiceImpl implements SellerService {
     }
 
     @Override
-    public Seller getSellerById(Long id) throws Exception {
-        Seller seller = sellerRepository.findById(id).orElseThrow(()-> new Exception("Seller not found with id - "+id));
+    public Seller getSellerById(Long id) throws SellerException {
+        Seller seller = sellerRepository.findById(id).orElseThrow(()-> new SellerException("Seller not found with id - "+id));
         return seller;
     }
 

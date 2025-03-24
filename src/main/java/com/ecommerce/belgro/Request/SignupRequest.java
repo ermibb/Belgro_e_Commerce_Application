@@ -1,4 +1,4 @@
-package com.ecommerce.belgro.Response;
+package com.ecommerce.belgro.Request;
 
 import lombok.Data;
 
