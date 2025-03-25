@@ -1,17 +1,14 @@
 package com.ecommerce.belgro.Controller;
 
 import com.ecommerce.belgro.Domain.USER_ROLE;
-import com.ecommerce.belgro.Model.User;
-import com.ecommerce.belgro.Model.VerificationCode;
 import com.ecommerce.belgro.Repository.UserRepository;
 import com.ecommerce.belgro.Request.LoginOtpRequest;
 import com.ecommerce.belgro.Request.LoginRequest;
 import com.ecommerce.belgro.Response.ApiResponse;
 import com.ecommerce.belgro.Response.AuthResponse;
-import com.ecommerce.belgro.Response.SignupRequest;
+import com.ecommerce.belgro.Request.SignupRequest;
 import com.ecommerce.belgro.Service.AuthService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;

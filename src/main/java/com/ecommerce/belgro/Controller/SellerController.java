@@ -1,6 +1,8 @@
 package com.ecommerce.belgro.Controller;
 
 import com.ecommerce.belgro.Config.JwtProvider;
+import com.ecommerce.belgro.Domain.AccountStatus;
+import com.ecommerce.belgro.Exceptions.SellerException;
 import com.ecommerce.belgro.Model.Seller;
 import com.ecommerce.belgro.Model.SellerReport;
 import com.ecommerce.belgro.Model.VerificationCode;
@@ -16,6 +18,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -34,7 +38,13 @@ public class SellerController {
     public ResponseEntity<AuthResponse> loginSeller(@RequestBody LoginRequest loginRequest) throws Exception {
         String otp = loginRequest.getOtp();
         String email = loginRequest.getEmail();
+
+        System.out.println(otp+" - "+email);
+
         loginRequest.setEmail("seller_"+email);
+
+          System.out.println(otp+" - "+email);
+
          AuthResponse authResponse = authService.signIn(loginRequest);
         return new ResponseEntity<>(authResponse, HttpStatus.ACCEPTED);
     }
@@ -69,16 +79,15 @@ public class SellerController {
         String text = "Welcome to BELGRO E-COMMERCE, verify your account using this link: ";
         String frontend_url = "http://localhost:3000/verify-seller/";
 
-        emailService.sendVerificationOtpEmail(seller.getEmail(), verificationCode.getOtp(), subject, text + frontend_url);
+        emailService.sendVerificationOtpEmail(seller.getEmail(), verificationCode.getOtp(), subject, (text + frontend_url));
 
         return new ResponseEntity<>(savedSeller, HttpStatus.CREATED);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Seller> getSellerById(@PathVariable Long id) throws Exception {
+    public ResponseEntity<Seller> getSellerById(@PathVariable Long id) throws SellerException {
 
         Seller seller = sellerService.getSellerById(id);
-
         return new ResponseEntity<>(seller, HttpStatus.OK);
     }
 
@@ -99,4 +108,27 @@ public class SellerController {
 //
 //        return new ResponseEntity<>(report, HttpStatus.OK);
 //    }
+
+    @GetMapping
+    public ResponseEntity<List<Seller>> getAllSellers(
+            @RequestParam(required = false) AccountStatus status) {
+        List<Seller> sellers = sellerService.getAllSellers(status);
+        return ResponseEntity.ok(sellers);
+    }
+
+    @PatchMapping()
+    public ResponseEntity<Seller> updateSeller(
+            @RequestHeader("Authorization") String jwt,
+            @RequestBody Seller seller) throws Exception {
+
+        Seller profile = sellerService.getSellerProfile(jwt);
+        Seller updatedSeller = sellerService.updateSeller(profile.getId(), seller);
+        return ResponseEntity.ok(updatedSeller);
+    }
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteSeller(@PathVariable Long id) throws Exception {
+
+        sellerService.deleteSeller(id);
+        return ResponseEntity.noContent().build();
+    }
 }

@@ -1,9 +1,6 @@
 package com.ecommerce.belgro.Controller;
 
-import com.ecommerce.belgro.Domain.USER_ROLE;
 import com.ecommerce.belgro.Model.User;
-import com.ecommerce.belgro.Response.AuthResponse;
-import com.ecommerce.belgro.Response.SignupRequest;
 import com.ecommerce.belgro.Service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

@@ -12,7 +12,7 @@ import com.ecommerce.belgro.Repository.UserRepository;
 import com.ecommerce.belgro.Repository.VerificationCodeRepository;
 import com.ecommerce.belgro.Request.LoginRequest;
 import com.ecommerce.belgro.Response.AuthResponse;
-import com.ecommerce.belgro.Response.SignupRequest;
+import com.ecommerce.belgro.Request.SignupRequest;
 import com.ecommerce.belgro.Service.AuthService;
 import com.ecommerce.belgro.Service.EmailService;
 import com.ecommerce.belgro.Util.OtpUtil;
@@ -98,7 +98,6 @@ public class AuthServiceImpl implements AuthService {
         if(isExist != null){
             verificationCodeRepository.delete(isExist);
         }
-
         String otp = OtpUtil.generatingOtp();
 
         VerificationCode verificationCode = new VerificationCode();
@@ -115,7 +114,7 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public AuthResponse signIn(LoginRequest loginRequest) {
+    public AuthResponse signIn(LoginRequest loginRequest) throws Exception {
         String username = loginRequest.getEmail();
         String otp = loginRequest.getOtp();
         
@@ -132,12 +131,18 @@ public class AuthServiceImpl implements AuthService {
         String roleName = authorities.isEmpty() ? null : authorities.iterator().next().getAuthority();
 
         authResponse.setRole(USER_ROLE.valueOf(roleName));
-
         return authResponse;
     }
 
-    private Authentication authenticate(String username, String otp) {
+    private Authentication authenticate(String username, String otp) throws Exception {
         UserDetails userDetails=customerUserService.loadUserByUsername(username);
+
+        String SELLER_PREFIX = "seller_";
+
+        if (username.startsWith(SELLER_PREFIX)){
+            username = username.substring(SELLER_PREFIX.length());
+        }
+
 
         if(userDetails==null){
             throw new BadCredentialsException("invalid username");
@@ -146,7 +151,7 @@ public class AuthServiceImpl implements AuthService {
         VerificationCode verificationCode=verificationCodeRepository.findByEmail(username);
 
         if(verificationCode==null || !verificationCode.getOtp().equals(otp)){
-            throw new BadCredentialsException("wrong otp");
+            throw new Exception("wrong otp ....");
         }
 
         return new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
