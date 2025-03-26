@@ -23,7 +23,7 @@ public interface ProductService {
            Integer maxPrice,
            Integer minDiscount,
            String sort,
-           Integer stock,
+           String stock,
            Integer pageNumber
     );
     List<Product> getProductsBySeller(Long sellerId);

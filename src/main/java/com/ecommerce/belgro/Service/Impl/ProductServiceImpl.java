@@ -16,9 +16,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.data.querydsl.QPageRequest;
 import org.springframework.stereotype.Service;
-
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -55,7 +53,8 @@ public class ProductServiceImpl implements ProductService {
             category3 = categoryRepository.save(category);
         }
 
-        int discountPercentage = calculateDiscountPercentage(request.getMrpPrice(), request.getSellingPrice());
+        int discountPercentage = calculateDiscountPercentage(request.getMrpPrice(),
+                request.getSellingPrice());
 
         Product product = new Product();
         product.setSeller(seller);
@@ -112,7 +111,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public Page<Product> getAllProducts(String category, String brand, String colors, String sizes,
                                         Integer minPrice, Integer maxPrice, Integer minDiscount, String sort,
-                                        Integer stock, Integer pageNumber) {
+                                        String stock, Integer pageNumber) {
 
         Specification<Product> spec = (root, query, criteriaBuilder) -> {
             List<Predicate> predicates = new ArrayList<>();
@@ -162,7 +161,7 @@ public class ProductServiceImpl implements ProductService {
 
         // Add sorting logic
         Pageable pageable;
-        if (sort!=null && !sort.isEmpty()) {}  {
+        if (sort != null && !sort.isEmpty()) {
             pageable = switch (sort) {
                 case "price_low" ->
                         PageRequest.of(pageNumber != null ? pageNumber : 0, 10, Sort.by("sellingPrice").ascending());
@@ -170,8 +169,9 @@ public class ProductServiceImpl implements ProductService {
                         PageRequest.of(pageNumber != null ? pageNumber : 0, 10, Sort.by("sellingPrice").descending());
                 default -> PageRequest.of(pageNumber != null ? pageNumber : 0, 10, Sort.unsorted());
             };
+        } else {
+            pageable = PageRequest.of(pageNumber != null ? pageNumber : 0, 10, Sort.unsorted());
         }
-        pageable = PageRequest.of(pageNumber!= null ? pageNumber:0, 10, Sort.unsorted());
 
         return productRepository.findAll(spec, pageable);
     }
