@@ -39,7 +39,7 @@ public class Order {
 
     private double totalMrpPrice;
 
-    private Integer totalSellingPrice;
+    private double totalSellingPrice;
 
     private Integer discount;
 
