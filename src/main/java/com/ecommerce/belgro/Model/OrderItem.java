@@ -27,9 +27,9 @@ public class OrderItem {
 
     private int quantity;
 
-    private Integer mrpPrice;
+    private double mrpPrice;
 
-    private Integer sellingPrice;
+    private double sellingPrice;
 
     private Long userId;
 

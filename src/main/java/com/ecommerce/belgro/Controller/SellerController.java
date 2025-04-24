@@ -11,6 +11,7 @@ import com.ecommerce.belgro.Request.LoginRequest;
 import com.ecommerce.belgro.Response.AuthResponse;
 import com.ecommerce.belgro.Service.AuthService;
 import com.ecommerce.belgro.Service.EmailService;
+import com.ecommerce.belgro.Service.SellerReportService;
 import com.ecommerce.belgro.Service.SellerService;
 import com.ecommerce.belgro.Util.OtpUtil;
 import jakarta.mail.MessagingException;
@@ -30,6 +31,7 @@ public class SellerController {
     private final AuthService authService;
     private final EmailService emailService;
     private final JwtProvider jwtProvider;
+    private final SellerReportService sellerReportService;
 
 
 
@@ -98,16 +100,16 @@ public class SellerController {
         return new ResponseEntity<>(seller, HttpStatus.OK);
     }
 
-//    @GetMapping("/report")
-//    public ResponseEntity<SellerReport> getSellerReport(
-//            @RequestHeader("Authorization") String jwt) throws Exception {
-//
-//        String email = jwtProvider.getEmailFromJwtToken(jwt);
-//        Seller seller = sellerService.getSellerByEmail(email);
-//        SellerReport report = sellerReportService.getSellerReport(seller);
-//
-//        return new ResponseEntity<>(report, HttpStatus.OK);
-//    }
+    @GetMapping("/report")
+    public ResponseEntity<SellerReport> getSellerReport(
+            @RequestHeader("Authorization") String jwt) throws Exception {
+
+        String email = jwtProvider.getEmailFormJwtToken(jwt);
+        Seller seller = sellerService.getSellerByEmail(email);
+        SellerReport report = sellerReportService.getSellerReport(seller);
+
+        return new ResponseEntity<>(report, HttpStatus.OK);
+    }
 
     @GetMapping
     public ResponseEntity<List<Seller>> getAllSellers(
